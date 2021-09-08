@@ -28,7 +28,6 @@ public class MemberController {
 	
 	@Autowired
 	MemberService service ;
-	
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	// PasswordEncoder interface 구현 클래스
@@ -36,46 +35,46 @@ public class MemberController {
 	//    SCryptPasswordEncoder, StandardPasswordEncoder, 
 	//    NoOpPasswordEncoder
 	// => 대표적인 BCryptPasswordEncoder root-context.xml 또는 servlet-context.xml 에 bean 설정
-
 	
-// ** Check_MemberList
+// ** Check_MemberList	
 	@RequestMapping(value = "/mchecklist")
 	public ModelAndView mchecklist(ModelAndView mv, MemberVO vo) {
 		
 		List<MemberVO> list = null;
 		
 		// ** check 확인
-		// => vo 에 check 컬럼을 추가하면 편리
-		// => 없으면 : service.selectList() 와 같음
-		// => 있으면 : 조건검색 service.checkList(); -> 서비스에 매서드 추가 
+		// => vo 에 check 컬럼을 추가하면 편리 
+		// => 없으면 : service.selectList();
+		// => 있으면 : 조건검색 service.checkList(); -> 서비스에 메서드 추가
 		
-		// if (vo.getCheck() != null && vo.getCheck().length > 0) {...}
-
-		if(vo.getCheck() != null) list=service.checkList(vo);
+		// if (vo.getCheck() != null && vo.getCheck().length > 0) { .... }
+		// => 배열 Type 의 경우 선택하지 않으면 check=null 이므로 길이비교 필요없음. 
+		
+ 		if (vo.getCheck() != null) list= service.checkList(vo);
 		else list = service.selectList();
 		
-		if(list != null && list.size() > 0) {
-			// Mapper는 null을 return 하지 않으므로 길이로 확인
+		if (list != null && list.size() > 0) {
+			// Mapper 는 null 을 return 하지 않으므로 길이로 확인
 			mv.addObject("Banana",list);
 		}else {
-			mv.addObject("message","~~ 출력할 자료가 1건도 없습니다. ~~");
+			mv.addObject("message", "~~ 출력할 자료가 1건도 없습니다. ~~");
 		}
-		mv.setViewName("member/checkMList");		
+		mv.setViewName("member/checkMList");
 		return mv;
-	}//mchecklist
+	} //mchecklist
 	
 // ** Json Delete
-	   @RequestMapping(value = "/jsdelete")
-	   public ModelAndView jsdelete(ModelAndView mv, MemberVO vo) {
-	      
-	      if (service.delete(vo) > 0) {
-	         mv.addObject("success", "T");
-	      }else {
-	         mv.addObject("success", "F");
-	      }
-	      mv.setViewName("jsonView");
-	      return mv;
-	   } //jsdelete
+	@RequestMapping(value = "/jsdelete")
+	public ModelAndView jsdelete(ModelAndView mv, MemberVO vo) {
+		
+		if (service.delete(vo) > 0) {
+			mv.addObject("success", "T");
+		}else {
+			mv.addObject("success", "F");
+		}
+		mv.setViewName("jsonView");
+		return mv;
+	} //jsdelete
 	
 // ** Image DownLoad
 	@RequestMapping(value = "/dnload")
@@ -89,7 +88,7 @@ public class MemberController {
 		// ** 위 의 위치를 이용해서 실제 저장위치 확인 
 		// => 개발중인지, 배포했는지 에 따라 결정
 		if (realPath.contains(".eclipse."))
-			 realPath = "C:/Users/skyla/Documents/MTest/MyWork/Spring03/src/main/webapp/resources/uploadImage"+fileName;
+			 realPath = "D:/MTest/MyWork/Spring03/src/main/webapp/resources/uploadImage/"+fileName;
 		else realPath += "resources\\uploadImage\\"+fileName; 
 		File file = new File(realPath) ;
 		mv.addObject("downloadFile", file);
@@ -110,7 +109,7 @@ public class MemberController {
 // 자바스크립트의 객체 표기법으로, 데이터를 전달 할 때 사용하는 표준형식.
 // 속성(key) 과 값(value) 이 하나의 쌍을 이룸
 		
-// ** JAVA객체 -> JSON 변환하기
+// ** JAVA의 Data 객체 -> JSON 변환하기
 // 1) GSON
 // : 자바 객체의 직렬화/역직렬화를 도와주는 라이브러리 (구글에서 만듦)
 // 즉, JAVA객체 -> JSON 또는 JSON -> JAVA객체
@@ -279,20 +278,27 @@ public class MemberController {
 	@RequestMapping(value = "/login")
 	public ModelAndView login(HttpServletRequest request, ModelAndView mv, MemberVO vo) {
 
-		String password = vo.getPassword(); //User가 입력한 값이고 
+		String password = vo.getPassword(); //User가 입력한값
 		// => 입력값의 오류에 대한 확인은 UI 에서 JavaScript로 처리
 		vo = service.selectOne(vo);
 		if (vo != null) {
-			// ** ID가 일치함 
-			// if (vo.getPassword().equals(password)) { // 암호화전
+			// ** ID 가 일치함
+			//if (vo.getPassword().equals(password)) {
 			
-	         // ** BCryptPasswordEncoder 적용
-	         // => passwordEncoder.matches(rawData, digest) -> (입력값, DB에보관된값)
-	         if (passwordEncoder.matches(password, vo.getPassword())) { 
-	        	 //여기에서vo.getPassword는 digest가 들어있음  
+			// ** BCryptPasswordEncoder 적용
+			// => passwordEncoder.matches(rawData, digest) -> (입력값, DB에보관된값_digest)
+			if (passwordEncoder.matches(password, vo.getPassword())) { 
+				// vo.getPassword() : digest 즉 암호화된값 
 				// 로그인 성공 : 로그인정보 session에 보관,  home으로
 				request.getSession().setAttribute("loginID",vo.getId());
 				request.getSession().setAttribute("loginName",vo.getName());
+				// BCryptPasswordEncoder 로 암호화 되면 복호화가 불가능함.
+				// => password 수정 을 별도로 처리해야 함.
+				// => 그러나 기존의 update  Code 를 활용하여 updateForm.jsp 에서 수정을 위해
+				//    User가 입력한 raw_password 를 보관함. 
+				request.getSession().setAttribute("loginPW",password);
+				// => 수정시에만 사용
+				
 				mv.setViewName("redirect:home");
 			}else {
 				// password 오류 : message , 재로그인 유도 (loginForm 으로)
@@ -342,18 +348,17 @@ public class MemberController {
 
 			vo=service.selectOne(vo);
 			if (vo!=null) {
-				
 				// updateForm 요청인지 확인 
-				if ("U".equals(request.getParameter("jcode"))) {
+				if ("U".equals(request.getParameter("jcode"))) { 
 					mv.setViewName("member/updateForm");
-					// ** PasswordEncoder 사용 때문에
-					//    Session에 보관해 놓은 raw_password 를 수정할 수 있도록 vo 에 set해줌
+					// ** PasswordEncoder 사용 때문에 
+					//    session에 보관해 놓은 raw_password 를 수정할수 있도록 vo에 set 해줌.
 					vo.setPassword((String)session.getAttribute("loginPW"));
 				}else {
 					mv.setViewName("member/memberDetail");
-					vo.setPassword("******"); // ~Detail.jsp에서 표시하지 않아도 됨.
+					vo.setPassword("*****"); // ~Detail.jsp 에서 표시하지 않아도 됨.
 				}
-				mv.addObject("Apple",vo);
+				mv.addObject("Apple", vo);
 			}else {
 				mv.addObject("message","~~ 정보를 찾을 수 없습니다, 로그인 후 이용하세요 ~~");
 				mv.setViewName("member/loginForm");
@@ -396,7 +401,7 @@ public class MemberController {
 		// 2) 위 의 위치를 이용해서 실제 저장위치 확인 
 		// => 개발중인지, 배포했는지 에 따라 결정
 		if (realPath.contains(".eclipse."))
-			 realPath = "C:/Users/skyla/Documents/MTest/MyWork/Spring03/src/main/webapp/resources/uploadImage";
+			 realPath = "D:/MTest/MyWork/Spring03/src/main/webapp/resources/uploadImage/";
 		else realPath += "resources\\uploadImage\\"; 
 		
 		// ** 폴더 만들기 (File 클래스활용)
@@ -429,9 +434,9 @@ public class MemberController {
 		
 		vo.setUploadfile(file2); // Table 저장 경로 set
 		
-		// ** Password 암호화 
-		// => BCryptPasswordEncoder 적용 
-		//	  encode(rawData) -> disest 생성 & vo에 set
+		// ** Password 암호화
+		// => BCryptPasswordEncoder 적용
+		//    encode(rawData) -> digest 생성 & vo 에 set  
 		vo.setPassword(passwordEncoder.encode(vo.getPassword()));
 		
 		if (service.insert(vo) > 0) {
@@ -455,7 +460,7 @@ public class MemberController {
 		String realPath = request.getRealPath("/"); // deprecated Method
 		// => 위 의 위치를 이용해서 실제 저장위치 확인  : 개발중인지, 배포했는지
 		if (realPath.contains(".eclipse."))
-			 realPath = "C:/Users/skyla/Documents/MTest/MyWork/Spring03/src/main/webapp/resources/uploadImage";
+			 realPath = "D:/MTest/MyWork/Spring03/src/main/webapp/resources/uploadImage/";
 		else realPath += "resources\\uploadImage\\"; 
 		
 		// ** 폴더 만들기 (File 클래스활용)
@@ -478,12 +483,11 @@ public class MemberController {
 			// => updateForm 에 hidden 으로 보관한 이전 화일명을 사용
 			file2 = vo.getUploadfile();
 		}
-		
 		vo.setUploadfile(file2); // Table 저장 경로 set
-
-		// ** Password 암호화 
-		// => BCryptPasswordEncoder 적용 
-		//	  encode(rawData) -> disest 생성 & vo에 set
+		
+		// ** Password 암호화
+		// => BCryptPasswordEncoder 적용
+		//    encode(rawData) -> digest 생성 & vo 에 set  
 		vo.setPassword(passwordEncoder.encode(vo.getPassword()));
 
 		if (service.update(vo) > 0) {
@@ -522,7 +526,7 @@ public class MemberController {
 				String realPath = request.getRealPath("/"); // deprecated Method
 				// => 위 의 위치를 이용해서 실제 저장위치 확인  : 개발중인지, 배포했는지
 				if (realPath.contains(".eclipse."))
-					 realPath = "C:/Users/skyla/Documents/MTest/MyWork/Spring03/src/main/webapp/resources/uploadImage"+fileName;
+					 realPath = "D:/MTest/MyWork/Spring03/src/main/webapp/resources/uploadImage/"+fileName;
 				else realPath += "resources\\uploadImage\\"+fileName; 
 				// 삭제  
 				// => File 인스턴스 생성후 존재 확인 후 삭제

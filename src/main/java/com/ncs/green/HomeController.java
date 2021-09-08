@@ -1,11 +1,13 @@
 package com.ncs.green;
 
+import java.security.Principal;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -190,44 +192,107 @@ public class HomeController {
 		mv.setViewName("ajaxTest/axTestForm");
 		return mv;
 	} //atestf
-	
-	// ** BCryptPasswordEncoder Test
+
+// ** BCryptPasswordEncoder Test	
 	@RequestMapping(value = "/bcrypt")
 	public ModelAndView bcrypt(ModelAndView mv) {
-		// PasswordEncoder (Interface) -> BCryptpasswordEncoder 구현 클래스 
+		// PasswordEncoder (Interface) -> BCryptPasswordEncoder 구현클래스
+		// => import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+		// => import org.springframework.security.crypto.password.PasswordEncoder;
+		
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		String password = "12345!";
+		String password = "12345!"; // rawData
+		
 		// 1. encode => 동일 원본(rawData)에 대해 다른 Digest 생성 Test
-		String digest1 = passwordEncoder.encode(password);
-		String digest2 = passwordEncoder.encode(password);
-		String digest3 = passwordEncoder.encode(password);
+		// String digest1,2,3 = passwordEncoder.encode("password");
+		//  모두 동일 rawData 적용후 모두 다른 digest 가 생성됨을 Test 해본다.
+		
+		String digest1 = passwordEncoder.encode("1111!");
+		String digest2 = passwordEncoder.encode("2222!");
+		String digest3 = passwordEncoder.encode("3333!");
 		System.out.println("** digest1 => "+digest1);
 		System.out.println("** digest2 => "+digest2);
 		System.out.println("** digest3 => "+digest3);
 		
-		// 2. 
+		// 2. matches(rawData, digest)
 		System.out.println("** matches1 => "+passwordEncoder.matches(password, digest1));
-		System.out.println("** matches1 => "+passwordEncoder.matches(password, digest2));
-		System.out.println("** matches1 => "+passwordEncoder.matches(password, digest3));
+		System.out.println("** matches2 => "+passwordEncoder.matches(password, digest2));
+		System.out.println("** matches3 => "+passwordEncoder.matches(password, digest3));
 		
 		mv.setViewName("redirect:home");
 		return mv;
-	} //bcry
+	} //bcrypt
 	
-	// ** WebSocket Echo Test **
+// *** Spring Security Test ***************************	
+	
+// ** Access_denied-handler (403 오류 화면 출력하기)
+	@RequestMapping(value = "/accessError")
+	public ModelAndView accessError(ModelAndView mv) {
+		mv.setViewName("errorPage/exception_403");
+		return mv;
+	}	
+// ** Custom LoginForm 
+// view 를 지정하지 않은경우 요청명.jsp 를 찾는다
+// 단, 폴더 위치를 지정하려면 요청명도 동일한 규칙으로 할 수 있다.
+// 아래의 경우에는  ~/views/ssLoginf.jsp 를 찾게됨.
+// => "message" 사용하지 않는경우 return 값은 void 도 가능함.
+	@RequestMapping(value = "/ssLoginf")
+	public ModelAndView ssLoginfTest(ModelAndView mv) {
+		mv.addObject("message", "** Spring security Login Test **") ;
+		return mv;
+	}
+// ** Admin Form 
+	@RequestMapping(value = "/adminf")
+	public ModelAndView adminf(ModelAndView mv) {
+		mv.setViewName("securityJsp/admin");
+		return mv;
+	}	
+// ** Logout 
+	@RequestMapping(value = "/ssLogoutf")
+	public ModelAndView ssLogoutf(ModelAndView mv) {
+		mv.setViewName("securityJsp/ssLogoutForm");
+		return mv;
+	}	
+// ** LoginSuccess 
+	@RequestMapping(value = "/authSuccess")
+	public ModelAndView authSuccess(ModelAndView mv) {
+		mv.setViewName("securityJsp/authSuccessF");
+		return mv;
+	}	
+	
+// ** ssDetail 
+// ** 로그인한 user 의 detail 정보 사용	
+// => 매개변수로 Principal 객체 접근 
+// => import java.security.Principal;
+	
+	//@Secured("ROLE_ADMIN")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("isAuthenticated()")
+	//@PreAuthorize("principal.username == #vo.id")
+	// 로그인 User 가 자신의 정보에 접근한 경우에만 처리하고 싶을떄 유용
+	// home.jsp 의 요청 url 변경 후 Test 
+	// <a href="ssdetail?id=banana">ssMyInfo</a> 
+	@RequestMapping(value = "/ssdetail")
+ 	public ModelAndView ssdetail(ModelAndView mv, Principal principal) {		
+		
+ 		System.out.println("** ssdetail principal.getName() => "+principal.getName());
+		mv.setViewName("securityJsp/ssDetail");
+		return mv;
+	}	
+// **************************************************	
+	
+// ** WebSocket Echo Test ***************************
 	@RequestMapping(value = "/echo")
 	public ModelAndView echo(ModelAndView mv) {
 		mv.setViewName("ajaxTest/wsEcho");
 		return mv;
 	} //echo
 	
-	// ** WebSocket Chat Test **
+// ** WebSocket Chat Test **
 	@RequestMapping(value = "/chat")
 	public ModelAndView chat(ModelAndView mv) {
 		mv.setViewName("ajaxTest/wsChat");
 		return mv;
 	} //chat
-
-	
 	
 } //class

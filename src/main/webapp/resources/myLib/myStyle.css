@@ -28,12 +28,15 @@ a:active { color:SeaGreen; }
 /* Link Span */
 .textLink { color:Blue; font-weight:bold;}
 
+/* axBoardList 의 Test3. board jsonView Test  */
 .content { color: gray; }
 #content {
-   display: none;
-   width: 300px;
-   height: 70px;
-   background: Beige;
-   z-index: 100;
-   position: absolute;
+	display: none;
+	width: 300px;
+	height: 70px;
+	background: Beige;
+	z-index: 100;
+	position: absolute;
 }
+
+          

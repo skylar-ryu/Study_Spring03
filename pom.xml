@@ -190,12 +190,31 @@
 			<version>${org.springframework-version}</version>
 		</dependency>
 		
-		<!--스프링시큐리티 core 라이브러리-->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
+		  <!--스프링시큐리티 core 라이브러리-->
+      <dependency>
+         <groupId>org.springframework.security</groupId>
+         <artifactId>spring-security-core</artifactId>
+         <version>${org.springframework-version}</version>
+      </dependency>
+      <!--스프링시큐리티 config 라이브러리-->
+      <dependency>
+         <groupId>org.springframework.security</groupId>
+         <artifactId>spring-security-config</artifactId>
+         <version>${org.springframework-version}</version>
+      </dependency>
+      <!-- 스프링 시큐리티가 제공하는 JSP용 시큐리티 태그 (JSTL taglibs) 라이브러리 -->
+      <dependency>
+         <groupId>org.springframework.security</groupId>
+         <artifactId>spring-security-taglibs</artifactId>
+         <version>${org.springframework-version}</version>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.springframework.security</groupId>
+         <artifactId>spring-security-test</artifactId>
+         <version>${org.springframework-version}</version>
+         <scope>test</scope>
+      </dependency>
 		
 		<!-- Spring WebSocket 
 		     => Servlet version 3.~~ 확인  --> 
