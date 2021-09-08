@@ -20,7 +20,7 @@ function setClock() {
 </script>
 </head>
 <body onload="setClock()">
-<h1>Hello Spring Oracle !!!</h1>
+<h1>Hello Spring Mybatis !!!</h1>
 <span>* Start : ${serverTime}</span><br>
 <span id="clock"></span><br>
 <c:if test="${loginID!=null}">
@@ -34,34 +34,31 @@ function setClock() {
 <div id="resultArea"></div>
 <hr>
 <c:if test="${loginID==null}">
-	<span id="aloginf" class="textLink">로그인</span>&nbsp;&nbsp;
+	<a href="loginf">로그인</a>&nbsp;&nbsp;
 	<a href="joinf">회원가입</a>&nbsp;&nbsp;
-	
 </c:if>
 <c:if test="${loginID!=null}">
 	<a href="mdetail">MyInfo</a>&nbsp;&nbsp;
 	<a href="logout">로그아웃</a>&nbsp;&nbsp;
 	<a href="mdelete">회원탈퇴</a>&nbsp;&nbsp;
 </c:if>
-<!-- <hr>
+<hr>
 <a href="mlist">MList</a>&nbsp;
 <a href="mpagelist">MPageL</a>&nbsp;
-<a href="mcplist">MCPageL</a>&nbsp;<br>
+<a href="mcplist">MCriPageL</a><br>
 <a href="blist">BList</a>&nbsp;
 <a href="bpagelist">BPageL</a>&nbsp;
 <a href="bcplist">BCriPageL</a><br>
 <a href="logj">Log4J</a>&nbsp;&nbsp;
 <a href="member/list">Member2</a>&nbsp;&nbsp;
-<a href="member/memberList3">view생략</a>&nbsp;&nbsp;<br>
+<a href="member/memberList3">viewName생략</a>&nbsp;&nbsp;
 <a href="bcrypt">BCrypt</a><br>
-
-Ajax Test
 <span id="aloginf" class="textLink">axLoginF</span>&nbsp;&nbsp;
 <a href="atestf">axTest</a>&nbsp;&nbsp;
 <a href="mchecklist">mCheck</a>&nbsp;&nbsp;
 <a href="bchecklist">bCheck</a><br>
-
 <a href="echo">WS_Echo</a>&nbsp;&nbsp;
-<a href="chat">WS_Chat</a><br> -->
+<a href="chat">WS_Chat</a>&nbsp;&nbsp;
+<a href="ssLoginf">ssLogin</a><br>
 </body>
 </html>

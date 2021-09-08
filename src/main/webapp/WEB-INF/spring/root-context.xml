@@ -1,13 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
-
-	<!--스프링시큐리티 라이브러리 BcryptPasswordEncoder -->
-   <bean id="bcryptPasswordEncoder"
-        class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 	
+	<!--스프링시큐리티 라이브러리 BcryptPasswordEncoder -->
+	<bean id="bcryptPasswordEncoder"
+		  class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/> 
+	
+	<!-- 1) JDBC Connection
+		** Oracle 11g release
+		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:orcl" />-->    
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:xe" />
+		<property name="username" value="system" />
+		<property name="password" value="oracle" /> 
+	</bean> 
+	
+	<!-- *** Spring Security Mybatis (interface 사용) 설정
+		=> mybatis-spring:scan 
+			dao필요 없이 ~Mapper.java를 사용해서 경로 맞춰주는 설정 
+		=> sqlSessionFactory : dataSource 설정만 하면됨 
+	
+	<mybatis-spring:scan base-package="securityTest"/>
+	
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+		  
+	<mvc:annotation-driven>
+		<mvc:argument-resolvers>
+			<bean class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver" />
+		</mvc:argument-resolvers>
+	</mvc:annotation-driven>  -->
 		
 </beans>

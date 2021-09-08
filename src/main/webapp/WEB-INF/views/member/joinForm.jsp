@@ -15,7 +15,6 @@
 // => 스위치 변수들
 var iCheck=false;
 var pCheck=false;
-var p2Check=false;
 var nCheck=false;
 var bCheck=false;
 var oCheck=false;
@@ -34,9 +33,6 @@ $(function(){
 	
 	$('#password').focusout(function() {
 		pCheck=pwCheck();
-	}); //password_focusout
-	$('#password2').focusout(function() {
-		p2Check=pw2Check();
 	}); //password_focusout
 	
 	$('#name').focusout(function() {
@@ -65,9 +61,6 @@ function inCheck() {
 		$('#iMessage').html(' ID 를 확인하세요 ~~');
 	}
 	if (pCheck==false) {
-		$('#pMessage').html(' Password 를 확인하세요 ~~');
-	}
-	if (p2Check==false) {
 		$('#pMessage').html(' Password 를 확인하세요 ~~');
 	}
 	if (nCheck==false) {
@@ -131,10 +124,6 @@ function idDupCheck() {
   </tr>
   <tr height="40"><td bgcolor="pink">Password</td>
   	  <td><input type="password" name="password" id="password" size="10"><br>
-		<span  id="pMessage" class="eMessage"></span></td>
-  </tr>
-  <tr height="40"><td bgcolor="pink">Password 확인</td>
-  	  <td><input type="password" name="password2" id="password2" size="10"><br>
 		<span  id="pMessage" class="eMessage"></span></td>
   </tr>
   <tr height="40"><td bgcolor="pink">Name</td>
