@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import criTest.SearchCriteria;
-import vo.BoardVO;
 import vo.MemberVO;
 import vo.PageVO;
 
@@ -56,9 +55,9 @@ public class MemberDAO {
 	} //pageList
 	
 	// ** selectList
-		public List<MemberVO> selectList() {
-			return sqlSession.selectList(NS+"selectList");
-		} //selectList
+	public List<MemberVO> selectList() {
+		return sqlSession.selectList(NS+"selectList");
+	} //selectList
 
 	// ** selectOne
 	public MemberVO selectOne(MemberVO vo) {

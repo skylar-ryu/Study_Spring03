@@ -2,19 +2,25 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee; https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-	
+	 <!-- ... /ns/javaee; https://ja.... 사이에 ; 넣어주면 오류 사라짐  -->
+	 
 	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/spring/root-context.xml</param-value>
+		<param-value>/WEB-INF/spring/root-context.xml
+		 			 /WEB-INF/spring/security-context3.xml</param-value>
+					 <!-- 스프링 시큐리티 적용 설정화일 추가 -->
 	</context-param>
-	
 	<!-- Creates the Spring Container shared by all Servlets and Filters -->
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-	
-	<!-- Processes application requests -->
+
+	<!-- 
+	** DispatcherServlet 계층도
+		DispatcherServlet -> FrameworkServlet -> HttpServletBean 
+			-> HttpServlet -> GenericServlet -> Object
+	-->
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -30,6 +36,24 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	
+	<!-- 스프링 시큐리티 Filter 적용  
+	** DelegatingFilterProxy (Delegating : 대표자, 위임자) 
+		=> 모든 URL(/*) 요청을 해당 필터에서 먼저 가로채 보안이 적용되도록 하는 서블릿 필터
+		=> 직접 보안 처리를 하는것은 아니지만, 보안 적용을 위한 시작점으로,
+		   스프링 시큐리티가 생성하는 FilterChainProxy 객체에 필터처리를 위임하고,
+		   이 FilterChainProxy 객체는 다시 여러 필터를 체인 형식으로 가지고 있는 
+		   SecurityFilterChain 에 처리를 위임함
+		=> filter-name 은 springSecurityFilterChain 이어야만 한다.
+	
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping> -->
+	
 	<!-- 한글처리 필터 -->
 	<filter>
 		<filter-name>characterEncoding</filter-name>
@@ -44,5 +68,5 @@
 		<filter-name>characterEncoding</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
- 
+
 </web-app>

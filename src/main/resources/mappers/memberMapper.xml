@@ -114,7 +114,7 @@
 
 	<insert id="insert">
 		insert into member values(
-		#{id},#{password},#{name},#{lev},#{birthd},#{point},#{weight},#{rid},#{uploadfile})
+		#{id},#{password},#{name},#{lev},#{birthd},#{point},#{weight},#{rid},#{uploadfile},'1')
 	</insert>
 	
 	<update id="update">
