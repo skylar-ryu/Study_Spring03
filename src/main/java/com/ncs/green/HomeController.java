@@ -316,4 +316,40 @@ public class HomeController {
 		return mv;
 	}
 	
+// ** Exception Test ***************************
+	@RequestMapping(value = "/etest")
+	public ModelAndView etest(ModelAndView mv) {
+		// ** ArithmeticException
+		// => 1) web.xml 적용
+		// => 2) Spring exceptionResolver 적용 ( servlet~~~.xml )
+		//int i = 100/0;  // by Zero, 500
+		double d = 100.0/0.0 ;  // Infinity
+		double p = 100.0%0.0 ;  // NaN
+		// 실수형 Zero 나눔 Test -> Exception 발생하지 않음 
+		// => 그러므로 Zero 연산 확인은 if (Double.isInfinity(d)) ~ ~ ,  if (Double.isNan(p)) ~~~ 
+		System.out.println("** ArithmeticException Test => "+d+", "+p);
+
+		// ** IllegalArgumentException
+		String s="123" ;  // s="123abc" : Error_Value
+		int i = 100;
+		i += Integer.parseInt(s);
+		System.out.println("** IllegalArgumentException Test => "+i);
+
+		// ** NullPointerException
+		s=null;
+		// if (s.equals("test")) {
+		// 예방 코드
+		if ("test".equals(s)) {
+			System.out.println("** NullPointerException Test => "+s);
+		}else System.out.println("** NullPointerException Test => 예방"); 
+
+		// ** defaultErrorView Test
+		String[] city = {"서울","성남","용인"} ;
+		System.out.println("** defaultErrorView Test => "+city[3]);
+		// java.lang.ArrayIndexOutOfBoundsException : xml 에 정의하지 않음
+
+		mv.setViewName("redirect:home");
+		return mv;
+	} //etest
+	
 } //class

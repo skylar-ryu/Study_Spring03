@@ -191,6 +191,31 @@
     
     <beans:bean id="echoHandler" class="socketTest.EchoHandler"/> 
     <beans:bean id="chatHandler" class="socketTest.ChatHandler"/> -->
- <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
-	 
+ <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  
+ <!-- *** Exceotion 설정 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+ <beans:bean id="exceptionResolver" 
+			class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+	<beans:property name="exceptionMappings">
+		<beans:props>
+		<!-- 스프링 하에서 발생된 Exception 은 Spring 의  Exception 객체를 사용해야 정확하게 인식함 -->   
+			<beans:prop key="org.springframework.dao.DuplicateKeyException">
+				errorPage/dupExceptionMessage</beans:prop>
+			<beans:prop key="org.springframework.jdbc.UncategorizedSQLException">
+				errorPage/sqlexceptionMessage</beans:prop>
+			<beans:prop key="java.lang.IllegalArgumentException">
+				errorPage/ilexceptionMessage</beans:prop>	
+			<beans:prop key="java.lang.ArithmeticException">
+				errorPage/arexceptionMessage</beans:prop>
+			<beans:prop key="java.lang.NullPointerException">
+				errorPage/npException</beans:prop>
+		</beans:props>
+	</beans:property> 
+	<beans:property name="defaultErrorView" 
+					value="errorPage/exceptionMessage" />
+</beans:bean>
+ 
+ 
+ 
+ 
 </beans:beans>

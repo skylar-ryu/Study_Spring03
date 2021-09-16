@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page errorPage = "error.jsp" %>
 <html>
 <head><title>Home</title>
 <link rel="stylesheet" type="text/css" href="resources/myLib/myStyle.css" >
@@ -65,6 +66,7 @@ function setClock() {
 <a href="bchecklist">bCheck</a><br>
 <a href="echo">WS_Echo</a>&nbsp;&nbsp;
 <a href="chat">WS_Chat</a>&nbsp;&nbsp;
+<a href="etest">Exception</a>&nbsp;&nbsp;<br>
 <a href="greensn">GreenSN</a>&nbsp;&nbsp;
 <a href="greenall">GreenAll</a>&nbsp;&nbsp;
 <a href="jeju">Jeju</a>&nbsp;&nbsp;
